@@ -1,17 +1,11 @@
 name: Generate Snake
 
 on:
-  # 每6小时自动运行一次
   schedule:
     - cron: "0 */6 * * *"
-  
-  # 允许手动触发
   workflow_dispatch:
-  
-  # 每次推送到main分支时运行
   push:
-    branches:
-    - main
+    branches: [ main ]
 
 jobs:
   generate:
@@ -19,22 +13,50 @@ jobs:
     timeout-minutes: 10
     
     steps:
-      # 检出仓库代码
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
-      # 生成贪吃蛇动画
-      - name: Generate Snake
+      - name: Generate snake game
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
             dist/snake.svg
             dist/snake-dark.svg?palette=github-dark
+            dist/snake-text.svg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      # 推送生成的文件到output分支
-      - name: Push to output branch
-        uses: crazy-max/ghaction-github-pages@v3
+      # 添加文字覆盖层
+      - name: Add text overlay to snake
+        run: |
+          # 创建带文字的SVG版本
+          cat > dist/snake-with-text.svg << 'EOF'
+          <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- 嵌入原始贪吃蛇动画 -->
+            <image href="snake.svg" width="800" height="400"/>
+            
+            <!-- 浮现文字动画 -->
+            <text x="400" y="50" text-anchor="middle" font-family="monospace" font-size="24" fill="#58a6ff">
+              <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite"/>
+              Hello World! 🐍
+            </text>
+            
+            <text x="400" y="80" text-anchor="middle" font-family="monospace" font-size="16" fill="#7c3aed">
+              <animate attributeName="opacity" values="0;0;1;1;0" dur="6s" repeatCount="indefinite"/>
+              Welcome to my GitHub!
+            </text>
+            
+            <text x="400" y="350" text-anchor="middle" font-family="monospace" font-size="14" fill="#f85149">
+              <animate attributeName="y" values="400;350;350;300" dur="8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0;1;1;0" dur="8s" repeatCount="indefinite"/>
+              Keep coding! 💻
+            </text>
+          </svg>
+          EOF
+        
+      - name: Push snake file to output branch
+        uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: output
           build_dir: dist
