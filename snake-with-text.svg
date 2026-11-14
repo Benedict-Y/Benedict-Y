@@ -1,0 +1,21 @@
+<svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- 嵌入原始贪吃蛇动画 -->
+  <image href="snake.svg" width="800" height="400"/>
+  
+  <!-- 浮现文字动画 -->
+  <text x="400" y="50" text-anchor="middle" font-family="monospace" font-size="24" fill="#58a6ff">
+    <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite"/>
+    Hello World! 🐍
+  </text>
+  
+  <text x="400" y="80" text-anchor="middle" font-family="monospace" font-size="16" fill="#7c3aed">
+    <animate attributeName="opacity" values="0;0;1;1;0" dur="6s" repeatCount="indefinite"/>
+    Welcome to my GitHub!
+  </text>
+  
+  <text x="400" y="350" text-anchor="middle" font-family="monospace" font-size="14" fill="#f85149">
+    <animate attributeName="y" values="400;350;350;300" dur="8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="8s" repeatCount="indefinite"/>
+    Keep coding! 💻
+  </text>
+</svg>
